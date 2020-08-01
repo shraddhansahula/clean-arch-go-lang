@@ -6,6 +6,7 @@ import (
 	"github.com/gorilla/mux"
 	"net/http"
 	"strconv"
+	_middleware "vehicles-service/delivery/middleware"
 	"vehicles-service/domain"
 	"vehicles-service/usecase"
 )
@@ -20,9 +21,9 @@ func NewVehicleHandler(r *mux.Router, us usecase.VehicleUsecase) {
 	handler := &vehicleHandler{
 		vehicleUsecase: us,
 	}
-	r.HandleFunc("/get/{id}", handler.getById).Methods("GET")
-	r.HandleFunc("/add", handler.addVehicle).Methods("POST")
 
+	r.HandleFunc("/get/{id}", _middleware.CheckAuth(handler.getById)).Methods("GET")
+	r.HandleFunc("/add", _middleware.CheckAuth(handler.addVehicle)).Methods("POST")
 	//gin code
 	//r.GET("/get/:id", handler.getById)
 	//r.POST("/add", handler.addVehicle) //curl --header "Content-Type: application/json" --request POST --data '{"brand":"Ferrari","model":"Spider"}' http://localhost:8080/add
