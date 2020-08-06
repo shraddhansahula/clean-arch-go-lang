@@ -10,3 +10,7 @@ type VehicleInput struct{
 	Brand  string `json:"brand" binding:"required"`
 	Model string `json:"model" binding:"required"`
 }
+
+type IdInput struct{
+	List []int `json:"list" binding:"required"`
+}

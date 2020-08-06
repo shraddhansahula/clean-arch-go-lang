@@ -27,3 +27,8 @@ func (uc *vehicleUsecase) ChangeVehicle(ctx context.Context, v *domain.Vehicle) 
 	return nil
 }
 
+func(uc *vehicleUsecase) ListVehicles(ctx context.Context, ids []int, mode int) []domain.Vehicle{
+	v := uc.vehicleRepo.GetList(ctx, ids, mode)
+	return v
+}
+

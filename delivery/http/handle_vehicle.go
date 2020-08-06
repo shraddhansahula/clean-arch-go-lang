@@ -24,9 +24,10 @@ func NewVehicleHandler(r *mux.Router, us usecase.VehicleUsecase) {
 
 	r.HandleFunc("/get/{id}", _middleware.CheckAuth(handler.getById)).Methods("GET")
 	r.HandleFunc("/add", _middleware.CheckAuth(handler.addVehicle)).Methods("POST")
+	r.HandleFunc("/getList", _middleware.CheckAuth(handler.getList)).Methods("POST")
 	//gin code
 	//r.GET("/get/:id", handler.getById)
-	//r.POST("/add", handler.addVehicle) //curl --header "Content-Type: application/json" --request POST --data '{"brand":"Ferrari","model":"Spider"}' http://localhost:8080/add
+	//r.POST("/add", handler.addVehicle) //curl --header "Content-Type: application/json" -H "Auth-String: mockPass" --request POST --data '{"brand":"Ferrari","model":"Spider"}' http://localhost:8080/add
 }
 
 func (vh *vehicleHandler) getById(w http.ResponseWriter, r *http.Request){
@@ -46,6 +47,17 @@ func (vh *vehicleHandler) addVehicle(w http.ResponseWriter, r *http.Request){
 	vehicle := domain.Vehicle{Brand: input.Brand, Model: input.Model}
 	vh.vehicleUsecase.CreateNewVehicle(r.Context(), &vehicle)
 	fmt.Println(vehicle)
+}
+
+func (vh *vehicleHandler) getList(w http.ResponseWriter, r *http.Request){
+	var input domain.IdInput
+	_ = json.NewDecoder(r.Body).Decode(&input)
+	mode := 2
+	vehicles :=vh.vehicleUsecase.ListVehicles(r.Context(), input.List, mode)
+	payload, _ := json.Marshal(vehicles)
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(payload)
+	fmt.Println(vehicles)
 }
 
 // gin code
